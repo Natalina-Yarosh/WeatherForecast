@@ -1,5 +1,6 @@
-<script setup>
-    defineProps({
+<script>
+export default {
+  props:{
         className: {
             type: String,
             required: true
@@ -16,11 +17,12 @@
             type: String,
             required: true
         },
-    })
+    }
+}
 </script>
 
 <template>
-     <div :class="{[className]: true, 'wrap__image': true}" :style="{ 'background-image': `url(${cityImage})` }">
+    <div :class="[className, 'wrap__image']" :style="{ 'background-image': `url(${cityImage})` }">
         <p class="degree">{{ temperature }}°</p>
         <p class="name">{{ city }}</p>
     </div>
@@ -35,7 +37,6 @@
     padding: 20px;
     position: relative;
 }
-
 .wrap__image::before{
     content: '';
     position: absolute;
@@ -45,23 +46,18 @@
     height: 100%;
     background: transparent;
 }
-
 .blue::before{
     background: rgba(14, 2, 47, 0.7);
 }
-
 .light-blue::before{
     background: rgba(53, 10, 170, 0.7);
 }
-
 .yellow::before{
     background: rgba(188, 188, 4, 0.7);
 }
-
 .red::before{
     background: rgba(100, 14, 5, 0.7);
 }
-
 .name {
     font-size: 16px;
     line-height: 18px;

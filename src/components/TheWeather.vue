@@ -1,21 +1,25 @@
 <template>
-   <div class="item">
-    <CityImage :cityImage="cityImage" :className="className"   :temperature="temperature" :city="city"/>
-    <WeatherInfo
-      :city="city"
-      :temperature="temperature"
-      :info="info"
-      :temperatureMin="temperatureMin"
-      :temperatureMax="temperatureMax"
-      :currentDate="currentDate"
-      :icon="icon"
-    />
+   <div>
+        <p v-if="isLoading" class="loading"></p>
+        <div v-else class="item">
+            <CityImage :cityImage="cityImage" :className="className"   :temperature="temperature" :city="city"/>
+            <WeatherInfo
+            :city="city"
+            :temperature="temperature"
+            :info="info"
+            :temperatureMin="temperatureMin"
+            :temperatureMax="temperatureMax"
+            :currentDate="currentDate"
+            :icon="icon"
+            />
+        </div>
    </div>
 </template>
 
 <script>
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { openWeatherMapApiUrl, openImageApiUrl } from '../assets/api';
 
 import CityImage from './CityImage.vue';
 import WeatherInfo from './WeatherInfo.vue';
@@ -37,7 +41,8 @@ export default {
         currentDate: dayjs().locale('en').format('dddd, D MMMM'),
         className:'',
         icon:'',
-        cityImage: ''
+        cityImage: '',
+        isLoading: false,
       }
     },
     mounted(){
@@ -46,6 +51,7 @@ export default {
     },
     methods:{
         getLocation() {
+            this.isLoading = true;
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
                 this.showWeather(position); 
@@ -58,11 +64,13 @@ export default {
             const apiKey = '3d51f680ac485452eada2b919d5a39bd';
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+            const weatherApiUrl = `${openWeatherMapApiUrl}?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+
 
             axios
-                .get(apiUrl)
+                .get(weatherApiUrl)
                 .then(response => {
+                    this.isLoading = false;
                     const data = response.data;
                     this.city = data.name;
                     this.temperature = (data.main.temp - 273.15).toFixed(1);
@@ -84,10 +92,10 @@ export default {
                 })
                 .catch(error => console.error('Error during API request:', error));
         },
-
         async fetchRandomCityImage() {
+            const imageApiUrl = `${openImageApiUrl}`;
             try {
-                const response = await axios.get('https://api.unsplash.com/photos/random', {
+                const response = await axios.get(imageApiUrl, {
                     params: {
                         query: 'city',
                         orientation: 'landscape',
@@ -109,5 +117,26 @@ export default {
     overflow: hidden;
     box-shadow: 0px 9px 19px 0px #121620;
     min-width: 300px;
+}
+
+@keyframes animation{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
+}
+
+.loading[data-v-e0cda9ff] {
+    padding: 30px;
+    width: 50px;
+    height: 50px;
+    margin: 100px auto;
+    border-radius: 50%;
+    border: 5px solid #514d4d;
+    position: relative;
+    border-top: 5px solid white;
+    animation: animation .5s linear infinite;
 }
 </style>
