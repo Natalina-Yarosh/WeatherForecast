@@ -12,7 +12,7 @@
     }
 }
 
-.loading[data-v-e0cda9ff] {
+.loading {
     padding: 30px;
     width: 50px;
     height: 50px;
