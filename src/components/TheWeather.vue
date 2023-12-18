@@ -1,6 +1,6 @@
 <template>
    <div>
-        <p v-if="isLoading" class="loading"></p>
+        <TheLoader  v-if="isLoading"/>
         <div v-else class="item">
             <CityImage :cityImage="cityImage" :className="className"   :temperature="temperature" :city="city"/>
             <WeatherInfo
@@ -19,15 +19,17 @@
 <script>
 import dayjs from 'dayjs';
 import axios from 'axios';
-import { openWeatherMapApiUrl, openImageApiUrl } from '../assets/api';
+import { openWeatherMapApiUrl, openImageApiUrl } from '../api.js';
 
 import CityImage from './CityImage.vue';
 import WeatherInfo from './WeatherInfo.vue';
+import TheLoader from './TheLoader.vue';
 
 export default {
     components: {
         CityImage,
         WeatherInfo,
+        TheLoader
     },
     data(){
       return{
@@ -42,7 +44,7 @@ export default {
         className:'',
         icon:'',
         cityImage: '',
-        isLoading: false,
+        isLoading: true,
       }
     },
     mounted(){
@@ -51,7 +53,6 @@ export default {
     },
     methods:{
         getLocation() {
-            this.isLoading = true;
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
                 this.showWeather(position); 
@@ -117,26 +118,5 @@ export default {
     overflow: hidden;
     box-shadow: 0px 9px 19px 0px #121620;
     min-width: 300px;
-}
-
-@keyframes animation{
-    0%{
-        transform: rotate(0deg);
-    }
-    100%{
-        transform: rotate(360deg);
-    }
-}
-
-.loading[data-v-e0cda9ff] {
-    padding: 30px;
-    width: 50px;
-    height: 50px;
-    margin: 100px auto;
-    border-radius: 50%;
-    border: 5px solid #514d4d;
-    position: relative;
-    border-top: 5px solid white;
-    animation: animation .5s linear infinite;
 }
 </style>
