@@ -1,6 +1,6 @@
 <template>
    <div>
-        <TheLoader  v-if="isLoading"/>
+        <TheLoader v-if="isLoading"/>
         <div v-else class="item">
             <CityImage :cityImage="cityImage" :className="className"   :temperature="temperature" :city="city"/>
             <WeatherInfo
@@ -49,13 +49,14 @@ export default {
     },
     mounted(){
         this.getLocation();
-        this.fetchRandomCityImage();
+       
     },
     methods:{
         getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
-                this.showWeather(position); 
+                    this.showWeather(position); 
+                    this.fetchRandomCityImage();
                 });
             } else {
                 alert("Geolocation is not supported by your browser.");
